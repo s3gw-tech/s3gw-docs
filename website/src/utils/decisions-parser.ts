@@ -10,7 +10,7 @@ export function decisionsPrefixParser(filename: string): {
     1; // name
 
   if (filename.length < minFileLen || filename.charAt(4) !== "-") {
-    logger.info(`Document at '${filename}' is not a decision`);
+    // logger.info(`Document at '${filename}' is not a decision`);
     return { filename: filename };
   }
 
