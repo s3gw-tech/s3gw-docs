@@ -4,8 +4,6 @@ export function decisionsPrefixParser(filename: string): {
   filename: string;
   numberPrefix?: number;
 } {
-  // console.log(`parse decision '${filename}'`);
-
   const minFileLen =
     4 + // prefix
     1 + // separator
@@ -27,7 +25,7 @@ export function decisionsPrefixParser(filename: string): {
   logger.info(`Decision ID ${idx} name '${fname}' found`);
 
   return {
-    filename: fname,
+    filename: filename,
     numberPrefix: idx,
   };
 }
@@ -40,8 +38,6 @@ export async function decisionsItemGenerator({
   docs,
   isCategoryIndex,
 }) {
-  console.log(item);
-  console.log(docs);
   const decisionsItems: any[] = docs.filter(
     (value: any) => value.sidebarPosition !== undefined
   );
@@ -60,7 +56,6 @@ export async function decisionsItemGenerator({
     docs: decisionsItems,
     isCategoryIndex,
   });
-  console.log(sidebarItems);
   const items: any[] = [
     {
       type: "doc",
