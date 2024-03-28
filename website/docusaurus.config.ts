@@ -78,6 +78,17 @@ const config: Config = {
       } satisfies DocPlugin.Options,
     ],
     [
+      "@docusaurus/plugin-content-docs",
+      {
+        id: "research",
+        path: "../s3gw/docs/research",
+        routeBasePath: "/research",
+        sidebarPath: "./sidebarsResearch.ts",
+        sidebarCollapsed: false,
+        sidebarCollapsible: false,
+      } satisfies DocPlugin.Options,
+    ],
+    [
       "@docusaurus/theme-classic",
       {
         customCss: ["./src/css/custom.css"],
