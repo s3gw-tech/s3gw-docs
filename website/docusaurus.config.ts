@@ -113,10 +113,19 @@ const config: Config = {
           to: "/ideas",
           sidebarId: "ideas",
         },
-        // { to: "/blog", label: "Blog", position: "left" },
         {
-          href: "https://github.com/facebook/docusaurus",
+          label: "Homepage",
+          href: "https://s3gw.tech",
+          position: "right",
+        },
+        {
           label: "GitHub",
+          href: "https://github.com/s3gw-tech/s3gw",
+          position: "right",
+        },
+        {
+          label: "Discussions",
+          href: "https://github.com/orgs/s3gw-tech/discussions",
           position: "right",
         },
       ],
@@ -125,19 +134,40 @@ const config: Config = {
       style: "dark",
       links: [
         {
-          title: "Community",
+          title: "Quick Links",
           items: [
             {
-              label: "Stack Overflow",
-              href: "https://stackoverflow.com/questions/tagged/docusaurus",
+              label: "Documentation",
+              to: "/",
             },
             {
-              label: "Discord",
-              href: "https://discordapp.com/invite/docusaurus",
+              label: "Decisions",
+              to: "/decisions",
             },
             {
-              label: "Twitter",
-              href: "https://twitter.com/docusaurus",
+              label: "Ideas",
+              to: "/ideas",
+            },
+            {
+              label: "S3 Compatibility",
+              to: "/s3-compatibility-table",
+            },
+          ],
+        },
+        {
+          title: "S3GW Project",
+          items: [
+            {
+              label: "Homepage",
+              href: "https://s3gw.tech",
+            },
+            {
+              label: "GitHub",
+              href: "https://github.com/s3gw-tech/s3gw",
+            },
+            {
+              label: "Discussions",
+              href: "https://github.com/orgs/s3gw-tech/discussions",
             },
           ],
         },
@@ -145,13 +175,17 @@ const config: Config = {
           title: "More",
           items: [
             {
-              label: "GitHub",
-              href: "https://github.com/facebook/docusaurus",
+              label: "ArtifactHub",
+              href: "https://artifacthub.io/packages/helm/s3gw/s3gw",
+            },
+            {
+              label: "Quay",
+              href: "https://quay.io/organization/s3gw",
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} s3gw.tech contributors. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,
