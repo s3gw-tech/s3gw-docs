@@ -92,7 +92,7 @@ const config: Config = {
       title: "S3GW",
       logo: {
         alt: "s3gw logo",
-        src: "img/logo-no-text.svg",
+        src: "img/s3gw-tech-logo-proposed.svg",
       },
       items: [
         {
