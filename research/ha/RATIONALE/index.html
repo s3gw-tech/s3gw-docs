@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="docs-wrapper plugin-docs plugin-id-research docs-version-current docs-doc-page docs-doc-id-ha/RATIONALE" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.1.1">
+<title data-rh="true">High Availability with s3gw + Longhorn | S3GW Documentation</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://docs.s3gw.tech/img/s3gw-tech-social-card.png"><meta data-rh="true" name="twitter:image" content="https://docs.s3gw.tech/img/s3gw-tech-social-card.png"><meta data-rh="true" property="og:url" content="https://docs.s3gw.tech/research/ha/RATIONALE"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-research-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-research-current"><meta data-rh="true" property="og:title" content="High Availability with s3gw + Longhorn | S3GW Documentation"><meta data-rh="true" name="description" content="- High Availability with s3gw + Longhorn"><meta data-rh="true" property="og:description" content="- High Availability with s3gw + Longhorn"><link data-rh="true" rel="icon" href="/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://docs.s3gw.tech/research/ha/RATIONALE"><link data-rh="true" rel="alternate" href="https://docs.s3gw.tech/research/ha/RATIONALE" hreflang="en"><link data-rh="true" rel="alternate" href="https://docs.s3gw.tech/research/ha/RATIONALE" hreflang="x-default"><link rel="stylesheet" href="/assets/css/styles.d171a0d7.css">
+<script src="/assets/js/runtime~main.db4e1a95.js" defer="defer"></script>
+<script src="/assets/js/main.53f686a7.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<script>!function(){function t(t){document.documentElement.setAttribute("data-theme",t)}var e=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return localStorage.getItem("theme")}catch(t){}}();t(null!==e?e:"light")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><div role="region" aria-label="Skip to main content"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/"><div class="navbar__logo"><img src="/img/s3gw-tech-logo-proposed.png" alt="s3gw logo" class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="/img/s3gw-tech-logo-proposed.png" alt="s3gw logo" class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate">S3GW</b></a><a class="navbar__item navbar__link" href="/">Documentation</a><a class="navbar__item navbar__link" sidebarid="decisions" href="/decisions">Decisions</a><a class="navbar__item navbar__link" sidebarid="ideas" href="/ideas">Ideas</a></div><div class="navbar__items navbar__items--right"><a href="https://s3gw.tech" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">Homepage<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><a href="https://github.com/s3gw-tech/s3gw" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><a href="https://github.com/orgs/s3gw-tech/discussions" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">Discussions<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="Switch between dark and light mode (currently light mode)" aria-label="Switch between dark and light mode (currently light mode)" aria-live="polite"><svg viewBox="0 0 24 24" width="24" height="24" class="lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" class="darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="main-wrapper mainWrapper_z2l0"><div class="docsWrapper_hBAB"><button aria-label="Scroll back to top" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type="button"></button><div class="docRoot_UBD9"><aside class="theme-doc-sidebar-container docSidebarContainer_YfHR"><div class="sidebarViewport_aRkj"><div class="sidebar_njMd"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--active" href="/research/ha/">readme</a></div><ul style="display:block;overflow:visible;height:auto" class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/research/ha/RATIONALE">High Availability with s3gw + Longhorn</a></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-2 menu__list-item"><div class="menu__list-item-collapsible"><a class="menu__link" tabindex="0">measurements</a></div><ul style="display:block;overflow:visible;height:auto" class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-3 menu__list-item"><a class="menu__link" tabindex="0" href="/research/ha/measurements/regular_localhost_zeroload_400_800Kdb/">Notes</a></li></ul></li></ul></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/research/">readme</a></li></ul></nav></div></div></aside><main class="docMainContainer_TBSr"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_VOVn"><div class="docItemContainer_Djhp"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Z_bl" aria-label="Breadcrumbs"><ul class="breadcrumbs" itemscope="" itemtype="https://schema.org/BreadcrumbList"><li class="breadcrumbs__item"><a aria-label="Home page" class="breadcrumbs__link" href="/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_YNFT"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item"><a class="breadcrumbs__link" itemprop="item" href="/research/ha/"><span itemprop="name">readme</span></a><meta itemprop="position" content="1"></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link" itemprop="name">High Availability with s3gw + Longhorn</span><meta itemprop="position" content="2"></li></ul></nav><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_ITEo"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">On this page</button></div><div class="theme-doc-markdown markdown"><h1>High Availability with s3gw + Longhorn</h1>
+<ul>
+<li>High Availability with s3gw + Longhorn<!-- -->
+<ul>
+<li><a href="#activeactive">Active/Active</a></li>
+<li><a href="#activewarm-standby">Active/Warm Standby</a></li>
+<li><a href="#activestandby">Active/Standby</a></li>
+<li><a href="#investigations-rationale">Investigation&#x27;s Rationale</a></li>
+<li><a href="#failure-cases">Failure cases</a>
+<ul>
+<li><a href="#radosgws-pod-failure-and-radosgws-pod-rescheduling">radosgw&#x27;s POD failure and radosgw&#x27;s POD rescheduling</a></li>
+<li><a href="#non-graceful-node-failure">Non-graceful node failure</a></li>
+<li><a href="#radosgws-failure-due-to-a-bug">radosgw&#x27;s failure due to a bug</a>
+<ul>
+<li><a href="#bug-not-related-to-a-certain-input-pattern">Bug not related to a certain input pattern</a></li>
+<li><a href="#bug-related-to-a-certain-input-pattern">Bug related to a certain input pattern</a></li>
+</ul>
+</li>
+<li><a href="#pv-data-corruption-at-application-level-due-to-radosgws-anomalous-exit">PV Data corruption at application level due to radosgw&#x27;s anomalous exit</a></li>
+</ul>
+</li>
+<li><a href="#measuring-s3gw-failures-on-kubernetes">Measuring s3gw failures on Kubernetes</a></li>
+<li><a href="#notes-on-testing-s3gw-within-k8s">Notes on testing s3gw within K8s</a></li>
+<li><a href="#tested-scenarios---radosgw-restart">Tested Scenarios - radosgw-restart</a>
+<ul>
+<li><a href="#regular_localhost_zeroload_emptydb">regular_localhost_zeroload_emptydb</a></li>
+<li><a href="#segfault_localhost_zeroload_emptydb">segfault_localhost_zeroload_emptydb</a></li>
+<li><a href="#regular_localhost_load_fio_64_write">regular_localhost_load_fio_64_write</a></li>
+<li><a href="#regular_localhost_zeroload_400_800kdb">regular_localhost_zeroload_400_800Kdb</a>
+<ul>
+<li><a href="#400k-objects---measures-done-with-the-wal-file-zeroed">400K objects - measures done with the WAL file zeroed</a></li>
+<li><a href="#800k-objects---measures-done-with-the-wal-file-still-to-be-processed-size-32g">800K objects - measures done with the WAL file still to be processed (size 32G)</a></li>
+</ul>
+</li>
+<li><a href="#regular-localhost-incremental-fill-5k">regular-localhost-incremental-fill-5k</a></li>
+<li><a href="#scale_deployment_0_1-k3s3nodes_zeroload_emptydb">scale_deployment_0_1-k3s3nodes_zeroload_emptydb</a></li>
+</ul>
+</li>
+<li><a href="#tested-scenarios---s3-workload-during-s3gw-pod-outage">Tested Scenarios - S3-workload during s3gw Pod outage</a>
+<ul>
+<li><a href="#putobj-100ms-clusterip">PutObj-100ms-ClusterIp</a></li>
+<li><a href="#putobj-100ms-ingress">PutObj-100ms-Ingress</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>We want to investigate what <em>High Availability</em> - HA - means for the s3gw when
+used with Longhorn.</p>
+<p>If we identify the meaning of HA as the ability to have N independent pipelines
+so that the failure of some of those does not affect the user&#x27;s operations,
+this is something that could be not easy to achieve with the s3gw.</p>
+<p>HA, anyway, is not necessarily tied to multiple independent pipelines.
+While High Availability (as a component of dependable computing) can be achieved
+through redundancy, it can also be achieved by significantly increased reliability
+and quality of the stack. e.g., improving the start time improves HA by lowering
+the <em>Recovery Time Objective</em> (RTO) metric after detecting and recovering from a
+fault.
+Furthermore, we must say: achieving HA in a way that never affects the
+user&#x27;s operations is also not realistic, since not all faults can be masked,
+or the complexity required to attempt it would actually be detrimental to
+overall system reliability/availability (aka not cost-effective).
+Paradoxically, failing fast instead of hanging on an attempted fault recovery
+can also increase observed availability.</p>
+<p>Our key goal, for the s3gw, is to maximize user-visible, reliable service
+availability, and to be tolerant with regard to certain faults (such as pod crashes,
+single node outages ... - the faults we consider or explicitly exclude are discussed
+later in the document).</p>
+<p>With pipeline, we mean all the chain from the ingress to the persistent volume <code>PV</code>
+(provided by Longhorn):</p>
+<!-- -->
+<p>HA can be difficult with a project like the s3gw because of one process: the <code>radosgw</code>,
+owning an <em>exclusive</em> access to a resource: the Kubernetes <code>PV</code> where the S3
+buckets and objects are persisted.
+Actually, this is also an advantage, due to its lower complexity.
+Active/active syncing of all operations is non-trivial,
+and an active/standby pattern is much simpler to implement with lower overhead
+in the absence of faults.</p>
+<p>In theory, 3 HA models are possible with the s3gw:</p>
+<ol>
+<li><strong>Active/Active</strong></li>
+<li><strong>Active/Warm Standby</strong></li>
+<li><strong>Active/Standby</strong></li>
+</ol>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="activeactive">Active/Active<a href="#activeactive" class="hash-link" aria-label="Direct link to Active/Active" title="Direct link to Active/Active">​</a></h2>
+<p>The <em>Active-Active</em> model must implement <em>true independent pipelines</em>
+where all the pieces are replicated.</p>
+<p>The immediate consequence of this statement is that every pipeline being part of
+the same logical s3gw service must bind to a different <code>PV</code>; one per <code>radosgw</code> process.
+All the <code>PV</code>s for the same logical s3gw, must therefore, sync their data.</p>
+<p>The need to synchronize and coordinate all operations across all nodes
+(to guarantee Atomicity/Independence/Durability, which even S3&#x27;s eventual consistency
+model needs in some cases) is not free - even then there&#x27;s a need to ensure the
+data has been replicated in reality, and since a fault can only be detected via
+a timeout of some form, there&#x27;s still a blip in availability
+(just, hopefully, not a returned error message).</p>
+<p>Since the synchronization mechanism is often complex, there&#x27;s an on-going price
+to be paid for achieving this, plus it is harder to get right
+(lowering availability through lowered quality).</p>
+<!-- -->
+<p>The ingress might still mask it and automatically retry.
+That&#x27;s another thing to consider: most S3 protocol libraries are built
+on the assumption of an unreliable network, and so a single non-repeatable
+failure might not show to the user, but just be (silently or not) retried and
+on it goes without anyone knowing beyond a blip in high latency, unless it happens
+too often.
+This is a property of the S3 protocol that makes it a bit easier for us
+to achieve, we hope.</p>
+<!-- -->
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="activewarm-standby">Active/Warm Standby<a href="#activewarm-standby" class="hash-link" aria-label="Direct link to Active/Warm Standby" title="Direct link to Active/Warm Standby">​</a></h2>
+<p>This model assumes N pipelines to be &quot;allocated&quot; on the cluster at the same time,
+but only one, the <em>active</em> pipeline, owns the <em>exclusive ownership</em>
+over the shared <code>PV</code>.</p>
+<p>Should the active pipeline suffer a failure, the next elected active pipeline,
+chosen to replace the old one, should pay a <em>time window</em> necessary to &quot;transfer&quot;
+the ownership over the shared <code>PV</code>.</p>
+<p>The Active plus Warm Standby operation here has no meaningful advantages over the
+Active/Standby option; loading the s3gw pod is the cheapest part of the whole
+process, compared to fault detection (usually a timeout), mounting
+(journal recovery) of the file system, the process running the SQLite,
+recovery on start, etc.</p>
+<p>We&#x27;d pay for this with complexity (and resource consumption while in standby)
+hat likely would only give us very marginal benefits at best.</p>
+<!-- -->
+<!-- -->
+<!-- -->
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="activestandby">Active/Standby<a href="#activestandby" class="hash-link" aria-label="Direct link to Active/Standby" title="Direct link to Active/Standby">​</a></h2>
+<p>In this scenario, in the event of failure, the system should pay the time
+needed to fully load a new pipeline.</p>
+<p>Supposing that the new pipeline has scheduled to load on a node where the
+s3gw image is not cached, the system should pay the time needed to download
+the image from the registry before starting it.</p>
+<p>In general on Kubernetes, it can not be assumed that an image is pre-pulled,
+since nodes may come and go dynamically.</p>
+<p>Pre-pulled images is something we do want to ensure for eligible nodes.
+Otherwise, our restart is unpredictably long.</p>
+<p>It&#x27;s always possible that a fault occurs exactly at the time where we are
+pre-loading the image, but that&#x27;s just bad luck.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="investigations-rationale">Investigation&#x27;s Rationale<a href="#investigations-rationale" class="hash-link" aria-label="Direct link to Investigation&#x27;s Rationale" title="Direct link to Investigation&#x27;s Rationale">​</a></h2>
+<p>The 3 models described above have different performances and different implementation
+efforts. While the <em>Active/Active</em> model is expected to require a significant
+development effort due to its inherent complex nature, for our use case,
+the Active/Standby model built on top of Longhorn actually makes
+the most sense and brings the &quot;best&quot; HA characteristics relative to implementing
+a more fully active/distributed solution.</p>
+<p>In particular, the <em>Active/Standby</em> model, is expected to work with nothing
+but the primitives normally available on any Kubernetes cluster.</p>
+<p>Given that the backend s3gw architecture is composed by:</p>
+<ul>
+<li>one ingress and one <code>ClusterIP</code> service</li>
+<li>one <em>stateless</em> <code>radosgw</code> process associated with a <em>stateful</em> <code>PV</code></li>
+</ul>
+<p>it is supposed that, when the <code>radosgw</code> process fails, a simple reschedule
+of its POD could be enough to fulfill this HA model.
+All of this has obviously timeouts and delays, we suspect we&#x27;ll have to adjust them
+for our requirements.</p>
+<p>A clarification is needed here: the <code>PV</code> <em>state</em> is guaranteed by <strong>Longhorn</strong>.</p>
+<p>Longhorn ensures that a <code>PV</code> (along with its content) is always available on
+any cluster&#x27;s node, so that, a POD can mount it regardless of its allocation on the
+cluster.</p>
+<p>Obviously, we can&#x27;t achieve higher availability or reliability than the underlying
+Longhorn volumes.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="failure-cases">Failure cases<a href="#failure-cases" class="hash-link" aria-label="Direct link to Failure cases" title="Direct link to Failure cases">​</a></h2>
+<p>The <code>PV</code> state is kept coherent by Longhorn, so errors at this level are assumed
+NOT possible; application level corruptions to the <code>PV</code>&#x27;s state ARE possible.
+s3gw won&#x27;t corrupt the PV&#x27;s state or the file system on it,
+but it might corrupt its own application data.
+Any corruption in the file system is outside what s3gw can reasonably protect
+against; at best, it can crash in a way that doesn&#x27;t corrupt the data further,
+but that&#x27;s all undefined behavior and &quot;restore from backup&quot; time.</p>
+<p>What are the failure cases that can happen for s3gw?
+Making these cases explicit could be useful for a theoretical reasoning on what
+scenarios we can actually think to solve with an HA model.
+If a case is clearly outside what an HA model can handle, we must expect that
+the Kubernetes back off mechanism to be the only mitigation when a restart loop
+should occur.</p>
+<p>Let&#x27;s examine the following scenarios:</p>
+<ol>
+<li><code>radosgw</code>&#x27;s POD failure and <code>radosgw</code>&#x27;s POD rescheduling</li>
+<li>Non-graceful node failure</li>
+<li><code>radosgw</code>&#x27;s failure due to a bug</li>
+<li><code>PV</code> PV Data corruption at application level due to radosgw&#x27;s anomalous exit</li>
+</ol>
+<p>We are supposing all these bugs or conditions to be fatal for the s3gw&#x27;s process
+so that they trigger an anomalous exit.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="radosgws-pod-failure-and-radosgws-pod-rescheduling">radosgw&#x27;s POD failure and radosgw&#x27;s POD rescheduling<a href="#radosgws-pod-failure-and-radosgws-pod-rescheduling" class="hash-link" aria-label="Direct link to radosgw&#x27;s POD failure and radosgw&#x27;s POD rescheduling" title="Direct link to radosgw&#x27;s POD failure and radosgw&#x27;s POD rescheduling">​</a></h3>
+<p>This case occurs when the <code>radosgw</code> process stops due to a failure of its POD.</p>
+<p>This case applies also when Kubernetes decides to reschedule the POD
+to another node, eg: when the node goes low on resources.
+This would often be called a &quot;switch-over&quot; in an HA cluster -
+e.g., an administratively orchestrated transition of the service to a new node
+(say, for maintenance/upgrade/etc reasons).
+This has the advantage of being schedulable, so it can happen at times
+of low load if these exist.
+In combination with proper interaction with the ingress - pausing requests
+there instead of failing them - we should be able to mask these cleanly.</p>
+<p>Bonus: this is also what we need to seamlessly restart on upgrade/update of the
+pod itself transparently.</p>
+<p>This can be thought as an infrastructure issue independent to the s3gw.
+In this case, the <em>Active/Standby</em> model fully restores the service by
+rescheduling a new POD somewhere in the cluster.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="non-graceful-node-failure">Non-graceful node failure<a href="#non-graceful-node-failure" class="hash-link" aria-label="Direct link to Non-graceful node failure" title="Direct link to Non-graceful node failure">​</a></h3>
+<p>This case occurs when the <code>radosgw</code> process stops due to a cluster&#x27;s node failure.
+This also means we weren&#x27;t shut down cleanly.
+So the recovery needs to be optimized for the stack, and as soon as we
+can, we need to hook into the ingress and tell it to pause until we&#x27;re done,
+and then resume.</p>
+<p>Kubernetes detects node failures but a recovery in this situation may take a
+very long time due to timeouts and grace periods; see Longhorn&#x27;s documentation:
+<a href="https://longhorn.io/docs/1.5.1/high-availability/node-failure/#what-to-expect-when-a-kubernetes-node-fails" target="_blank" rel="noopener noreferrer">what to expect when a kubernetes node fails</a>
+( suggests &quot;up to 7 minutes&quot;, which is often unacceptable in response to node failures).</p>
+<p>In Kubernetes 1.28, k8s has gained GA support for the concept of <a href="https://kubernetes.io/blog/2023/08/16/kubernetes-1-28-non-graceful-node-shutdown-ga" target="_blank" rel="noopener noreferrer">non-graceful
+node shutdowns</a> and orchestrating recovery actions
+once the taint/flag is manually set.
+Currently, this relies on manual intervention - the administrator needs to ensure
+the node(s) is (are) really down to avoid risk of split-brain scenarios.</p>
+<p>Regarding this topic, we have opened a specific issue:
+<a href="https://github.com/longhorn/longhorn/issues/6803" target="_blank" rel="noopener noreferrer">Improving recovery times for non-graceful node failures</a>
+within the Longhorn project.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="radosgws-failure-due-to-a-bug">radosgw&#x27;s failure due to a bug<a href="#radosgws-failure-due-to-a-bug" class="hash-link" aria-label="Direct link to radosgw&#x27;s failure due to a bug" title="Direct link to radosgw&#x27;s failure due to a bug">​</a></h3>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="bug-not-related-to-a-certain-input-pattern">Bug not related to a certain input pattern<a href="#bug-not-related-to-a-certain-input-pattern" class="hash-link" aria-label="Direct link to Bug not related to a certain input pattern" title="Direct link to Bug not related to a certain input pattern">​</a></h4>
+<p>The crash is caused by a bug not directly related to any input type.</p>
+<p>Examples:</p>
+<ul>
+<li>Memory leaks</li>
+<li>Memory corruptions (stack or heap corruptions)</li>
+<li>Periodic operations or routines not related to an input (GC, measures,
+telemetry, etc)</li>
+</ul>
+<p>For a bug like this, the <em>Active/Standby</em> model could guarantee
+the user&#x27;s operations <em>until the next occurrence</em> of the same malfunctioning.</p>
+<p>A definitive solution would be available only when a patch for the issue
+has released.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="bug-related-to-a-certain-input-pattern">Bug related to a certain input pattern<a href="#bug-related-to-a-certain-input-pattern" class="hash-link" aria-label="Direct link to Bug related to a certain input pattern" title="Direct link to Bug related to a certain input pattern">​</a></h4>
+<p>The crash is caused by a bug directly related to a certain input type.</p>
+<p>Examples:</p>
+<ul>
+<li>Putting Buckets with some name&#x27;s pattern</li>
+<li>Putting Objects that have a certain size</li>
+<li>Performing an admin operation over a suspended user</li>
+</ul>
+<p>For a bug like this, the <em>Active/Standby</em> model could guarantee
+the user&#x27;s operations under the condition that the crash-triggering
+input is recognized by the user and thus its submission blocked.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="pv-data-corruption-at-application-level-due-to-radosgws-anomalous-exit">PV Data corruption at application level due to radosgw&#x27;s anomalous exit<a href="#pv-data-corruption-at-application-level-due-to-radosgws-anomalous-exit" class="hash-link" aria-label="Direct link to PV Data corruption at application level due to radosgw&#x27;s anomalous exit" title="Direct link to PV Data corruption at application level due to radosgw&#x27;s anomalous exit">​</a></h3>
+<p>This case occurs when the state on the <code>PV</code> corrupts due to a <code>radosgw</code>&#x27;s
+anomalous exit.</p>
+<p>In this unfortunate scenario, the <em>Active/Standby</em> can hardly help.
+A restart could evenly fix the problem or trigger an endless restarting loop.
+Logical data corruption is a Robustness/Reliability problem; the best we can
+aim for is to detect it (and abort with prejudice and finally so, so as to not
+make the corruption worse).
+The fix for this could contemplate an human intervention.
+A definitive solution would be available only when a patch for the issue
+is available.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="measuring-s3gw-failures-on-kubernetes">Measuring s3gw failures on Kubernetes<a href="#measuring-s3gw-failures-on-kubernetes" class="hash-link" aria-label="Direct link to Measuring s3gw failures on Kubernetes" title="Direct link to Measuring s3gw failures on Kubernetes">​</a></h2>
+<p>After reviewing the cases, we can say that what can be actually solved with
+an HA model with s3gw is when the failure is not dependent to applicative bugs.
+We can handle temporary issues involving the infrastructure that is hosting
+the <code>radosgw</code> process.</p>
+<p>We are interested in measuring:</p>
+<ul>
+<li>
+<p>The (kill - re) start loop timing outside of k8s/LH.
+So we have a baseline and we can measure of what Kubernetes adds, and how slow
+the s3gw is when exiting:</p>
+<ul>
+<li>Cleanly</li>
+<li>Crashing with no ops in flight</li>
+<li>Crashing with a load on-going</li>
+</ul>
+</li>
+<li>
+<p>Then, fault detection times for k8s - how long until it notices that the
+process has crashed (that should be quick due to the generated signal),
+but what about the process hanging? (e.g., crashes are separate from timeouts)</p>
+</li>
+<li>
+<p>Node failures, again, we need to understand which factors affect k8s detecting
+that and reacting to them, and what latencies are introduced by k8s/LH.</p>
+</li>
+</ul>
+<p>Actively asking k8s to restart is different (see case one, switch- vs fail-over).
+That should be smooth, but is not actually a failure scenario.
+Probably worth handling in a separate section.</p>
+<p>Hence, The idea to collect measures regarding a series of restarts
+artificially triggered on the <code>radosgw</code>&#x27;s POD.
+Obtaining such measures would allow to compute some arbitrary statistics
+for the time required by Kubernetes to restart the <code>radosgw</code>&#x27;s POD.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="notes-on-testing-s3gw-within-k8s">Notes on testing s3gw within K8s<a href="#notes-on-testing-s3gw-within-k8s" class="hash-link" aria-label="Direct link to Notes on testing s3gw within K8s" title="Direct link to Notes on testing s3gw within K8s">​</a></h2>
+<p>As previously said, we want to compute some statistics regarding the Kubernetes
+performances when restarting the <code>radosgw</code>&#x27;s Pod.</p>
+<p>We developed the <code>s3gw Probe</code>, a program with the purpose of collecting
+certain events coming from the <code>radosgw</code> process.
+The tool acts as a client/server service inside the Kubernetes cluster.</p>
+<ul>
+<li>It acts as client vs the <code>radosgw</code> process requesting it to die.</li>
+<li>It acts as client vs the k8s&#x27;s <code>control plane</code> requesting a certain deployment
+to scale up and down.</li>
+<li>It acts as server of <code>radosgw</code> process collecting its <code>death</code> and <code>start</code> events.</li>
+<li>It acts as server of the user&#x27;s client accepting configurations of restart
+scenarios to be triggered against the <code>radosgw</code> process.</li>
+<li>It acts as server of the user&#x27;s client returning statistics over the collected
+data.</li>
+</ul>
+<p>The <code>radosgw</code> code has been patched to accept a REST call from the probe
+where the user can specify the way the <code>radosgw</code> will exit.</p>
+<p>Currently, 4 modes are possible against the <code>radosgw</code>:</p>
+<ul>
+<li><code>exit0</code></li>
+<li><code>exit1</code></li>
+<li><code>segfault</code></li>
+<li><code>regular</code></li>
+</ul>
+<p>Regardless of the process&#x27;s exit code, with Deployments, Kubernetes deals
+with a restart loop using the same strategy.
+A Pod handled by a Deployment goes into the <code>CrashLoopBackoff</code> state.
+The Pod is not managed on its own. It is managed through a ReplicaSet, which in
+turn is managed through a Deployment. A Deployment is a Kubernetes workload
+primitive whose Pods are assumed to run indefinitely.</p>
+<p>About this behavior, there is actually an opened request to make the
+<a href="https://github.com/kubernetes/kubernetes/issues/57291" target="_blank" rel="noopener noreferrer">CrashLoopBackoff timing tuneable</a>,
+at least for the cases when the process exits with zero.</p>
+<p>Anyway, this behavior led us to think a different way we could use to achieve a
+sufficient number of restarts samples for the <code>radosgw</code>&#x27;s Pod.
+We ended up issuing a <code>scale deployment 0</code> followed by a <code>scale deployment 1</code> applied
+to the <code>radosgw</code>&#x27;s deployment.
+This trick allows to generate an arbitrary number of Pod restarts without falling
+into the <code>CrashLoopBackoff</code> state.</p>
+<p>So, inside a Kubernetes environment, the probe tool can pilot the <code>control plane</code>
+to scale down and up the s3gw&#x27;s backend pod.</p>
+<p>Currently, 2 modes are possible against the <code>control plane</code>:</p>
+<ul>
+<li><code>k8s_scale_deployment_0_1</code></li>
+<li><code>k8s_scale_deployment_0_1_node_rr</code></li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="tested-scenarios---radosgw-restart">Tested Scenarios - radosgw-restart<a href="#tested-scenarios---radosgw-restart" class="hash-link" aria-label="Direct link to Tested Scenarios - radosgw-restart" title="Direct link to Tested Scenarios - radosgw-restart">​</a></h2>
+<p>When we test a scenario we are interested in collecting <code>radosgw</code>&#x27;s restart
+events; for each restart we measure the following metrics:</p>
+<ul>
+<li>
+<p><code>to_main</code>: this is evaluated as the duration elapsed between a <code>radosgw</code>&#x27;s
+death event and the measure at the very begin of the <code>main</code> body
+in the newly restarted process.</p>
+</li>
+<li>
+<p><code>to_frontend_up</code>: this is evaluated as the duration elapsed between a <code>radosgw</code>&#x27;s
+death event and the measure just after the newly restarted process is
+able to accept a <code>TCP/IP</code> connection from a client.</p>
+</li>
+</ul>
+<p>From these 2 metrics, we produce also a derived metric: <code>frontend_up_main_delta</code>,
+that is just the arithmetic difference between <code>to_frontend_up</code> and <code>to_main</code>.</p>
+<p>For each scenario tested we collect a set of measures.
+For each scenario tested we produce a set of artifacts:</p>
+<ul>
+<li>
+<p><code>*_stats.json</code></p>
+<ul>
+<li>It is the <code>json</code> file containing all the measures done for a scenario.
+It also contains some key statistics.</li>
+</ul>
+</li>
+<li>
+<p><code>*_raw.svg</code></p>
+<ul>
+<li>It is the plot containing the all the charts for the measures:<!-- -->
+<ul>
+<li><code>to_main</code></li>
+<li><code>to_frontend_up</code></li>
+<li><code>frontend_up_main_delta</code></li>
+</ul>
+</li>
+</ul>
+<p>On the X axis there are the restart event&#x27;s <code>ID</code>s.
+They follow the temporal order of the restart events.</p>
+</li>
+<li>
+<p><code>*_percentiles_to_main.svg</code></p>
+<ul>
+<li>It is the plot containing the percentile graph for the <code>to_main</code>
+metric.</li>
+</ul>
+</li>
+<li>
+<p><code>*_percentiles_to_fup.svg</code></p>
+<ul>
+<li>It is the plot containing the percentile graph for the <code>to_frontend_up</code>
+metric.</li>
+</ul>
+</li>
+<li>
+<p><code>*_percentiles_fup_main_delta.svg</code></p>
+<ul>
+<li>It is the plot containing the percentile graph for the <code>frontend_up_main_delta</code>
+metric.</li>
+</ul>
+</li>
+</ul>
+<p>The file name, normally, contains some information such as:</p>
+<ul>
+<li>
+<p>deathtype: the way the <code>radosgw</code> process is asked to die:</p>
+<ul>
+<li><code>exit0</code> - the process is asked to immediately exit with <code>exit(0)</code></li>
+<li><code>exit1</code> - the process is asked to immediately exit with <code>exit(1)</code></li>
+<li><code>segfault</code> - the process is asked to trigger a <code>segmentation fault</code></li>
+<li><code>regular</code> - the process is asked to exit with the ordered shutdown procedure</li>
+</ul>
+</li>
+<li>
+<p>environment: the environment where the scenario is tested:</p>
+<ul>
+<li><code>localhost/host-path-volume</code></li>
+<li><code>k8s/k3d/k3s ... /host-path-volume</code></li>
+<li><code>k8s/k3d/k3s ... /LH-volume</code></li>
+</ul>
+</li>
+<li>
+<p>description: is a key description of the scenario</p>
+</li>
+<li>
+<p>TS: this is just a timestamp of when the artifacts were produced</p>
+</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="regular_localhost_zeroload_emptydb">regular_localhost_zeroload_emptydb<a href="#regular_localhost_zeroload_emptydb" class="hash-link" aria-label="Direct link to regular_localhost_zeroload_emptydb" title="Direct link to regular_localhost_zeroload_emptydb">​</a></h3>
+<ul>
+<li>restart-type: <code>regular</code></li>
+<li>env: <code>localhost/host-path-volume</code></li>
+<li>load: <code>zero-empty-db</code></li>
+<li>#measures: <code>100</code></li>
+</ul>
+<table><thead><tr><th><img src="measurements/regular_localhost_zeroload_emptydb/regular-localhost-zeroload-emptydb_raw_1694425886.svg"></th><th><img src="measurements/regular_localhost_zeroload_emptydb/regular-localhost-zeroload-emptydb_percentiles_to_main_1694425886.svg"></th></tr></thead><tbody><tr><td><img src="measurements/regular_localhost_zeroload_emptydb/regular-localhost-zeroload-emptydb_percentiles_to_fup_1694425886.svg"></td><td><img src="measurements/regular_localhost_zeroload_emptydb/regular-localhost-zeroload-emptydb_percentiles_fup_main_delta_1694425886.svg"></td></tr></tbody></table>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="segfault_localhost_zeroload_emptydb">segfault_localhost_zeroload_emptydb<a href="#segfault_localhost_zeroload_emptydb" class="hash-link" aria-label="Direct link to segfault_localhost_zeroload_emptydb" title="Direct link to segfault_localhost_zeroload_emptydb">​</a></h3>
+<ul>
+<li>restart-type: <code>segfault</code></li>
+<li>env: <code>localhost/host-path-volume</code></li>
+<li>load: <code>zero-empty-db</code></li>
+<li>#measures: <code>100</code></li>
+</ul>
+<table><thead><tr><th><img src="measurements/segfault_localhost_zeroload_emptydb/segfault-localhost-zeroload-emptydb_raw_1694428197.svg"></th><th><img src="measurements/segfault_localhost_zeroload_emptydb/segfault-localhost-zeroload-emptydb_percentiles_to_main_1694428197.svg"></th></tr></thead><tbody><tr><td><img src="measurements/segfault_localhost_zeroload_emptydb/segfault-localhost-zeroload-emptydb_percentiles_to_fup_1694428197.svg"></td><td><img src="measurements/segfault_localhost_zeroload_emptydb/segfault-localhost-zeroload-emptydb_percentiles_fup_main_delta_1694428197.svg"></td></tr></tbody></table>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="regular_localhost_load_fio_64_write">regular_localhost_load_fio_64_write<a href="#regular_localhost_load_fio_64_write" class="hash-link" aria-label="Direct link to regular_localhost_load_fio_64_write" title="Direct link to regular_localhost_load_fio_64_write">​</a></h3>
+<ul>
+<li>restart-type: <code>regular</code></li>
+<li>env: <code>localhost/host-path-volume</code></li>
+<li>load: <code>fio</code></li>
+<li>#measures: <code>100</code></li>
+</ul>
+<p><code>fio</code> configuration:</p>
+<div class="language-ini codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-ini codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">[global]</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">ioengine=http</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">http_verbose=0</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">https=off</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">http_mode=s3</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">http_s3_key=test</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">http_s3_keyid=test</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">http_host=localhost:7480</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">[s3-write]</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">filename=/workload-1/obj1</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">numjobs=8</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">rw=write</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">size=64m</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">bs=1m</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<table><thead><tr><th><img src="measurements/regular_localhost_load_fio_64_write/regular-localhost-writeload_raw_1694440297.svg"></th><th><img src="measurements/regular_localhost_load_fio_64_write/regular-localhost-writeload_percentiles_to_main_1694440297.svg"></th></tr></thead><tbody><tr><td><img src="measurements/regular_localhost_load_fio_64_write/regular-localhost-writeload_percentiles_to_fup_1694440297.svg"></td><td><img src="measurements/regular_localhost_load_fio_64_write/regular-localhost-writeload_percentiles_fup_main_delta_1694440297.svg"></td></tr></tbody></table>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="regular_localhost_zeroload_400_800kdb">regular_localhost_zeroload_400_800Kdb<a href="#regular_localhost_zeroload_400_800kdb" class="hash-link" aria-label="Direct link to regular_localhost_zeroload_400_800Kdb" title="Direct link to regular_localhost_zeroload_400_800Kdb">​</a></h3>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="400k-objects---measures-done-with-the-wal-file-zeroed">400K objects - measures done with the WAL file zeroed<a href="#400k-objects---measures-done-with-the-wal-file-zeroed" class="hash-link" aria-label="Direct link to 400K objects - measures done with the WAL file zeroed" title="Direct link to 400K objects - measures done with the WAL file zeroed">​</a></h4>
+<ul>
+<li>restart-type: <code>regular</code></li>
+<li>env: <code>localhost/host-path-volume</code></li>
+<li>load: <code>zero-400K-db</code></li>
+<li>#measures: <code>100</code></li>
+</ul>
+<table><thead><tr><th><img src="measurements/regular_localhost_zeroload_400_800Kdb/regular-localhost-zeroload-400Kdb_raw_1694522179.svg"></th><th><img src="measurements/regular_localhost_zeroload_400_800Kdb/regular-localhost-zeroload-400Kdb_percentiles_to_main_1694522179.svg"></th></tr></thead><tbody><tr><td><img src="measurements/regular_localhost_zeroload_400_800Kdb/regular-localhost-zeroload-400Kdb_percentiles_to_fup_1694522179.svg"></td><td><img src="measurements/regular_localhost_zeroload_400_800Kdb/regular-localhost-zeroload-400Kdb_percentiles_fup_main_delta_1694522179.svg"></td></tr></tbody></table>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="800k-objects---measures-done-with-the-wal-file-still-to-be-processed-size-32g">800K objects - measures done with the WAL file still to be processed (size 32G)<a href="#800k-objects---measures-done-with-the-wal-file-still-to-be-processed-size-32g" class="hash-link" aria-label="Direct link to 800K objects - measures done with the WAL file still to be processed (size 32G)" title="Direct link to 800K objects - measures done with the WAL file still to be processed (size 32G)">​</a></h4>
+<ul>
+<li>restart-type: <code>regular</code></li>
+<li>env: <code>localhost/host-path-volume</code></li>
+<li>load: <code>zero-800K-db</code></li>
+<li>#measures: <code>100</code></li>
+</ul>
+<table><thead><tr><th><img src="measurements/regular_localhost_zeroload_400_800Kdb/regular-localhost-zeroload-800Kdb_raw_1694524508.svg"></th><th><img src="measurements/regular_localhost_zeroload_400_800Kdb/regular-localhost-zeroload-800Kdb_percentiles_to_main_1694524508.svg"></th></tr></thead><tbody><tr><td><img src="measurements/regular_localhost_zeroload_400_800Kdb/regular-localhost-zeroload-800Kdb_percentiles_to_fup_1694524508.svg"></td><td><img src="measurements/regular_localhost_zeroload_400_800Kdb/regular-localhost-zeroload-800Kdb_percentiles_fup_main_delta_1694524508.svg"></td></tr></tbody></table>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="regular-localhost-incremental-fill-5k">regular-localhost-incremental-fill-5k<a href="#regular-localhost-incremental-fill-5k" class="hash-link" aria-label="Direct link to regular-localhost-incremental-fill-5k" title="Direct link to regular-localhost-incremental-fill-5k">​</a></h3>
+<ul>
+<li>restart-type: <code>regular</code></li>
+<li>env: <code>localhost/host-path-volume</code></li>
+<li>load: <code>5K-incremental-800K-db</code></li>
+<li>#measures: <code>100</code></li>
+</ul>
+<p>Between every restart there is an interposed <code>PUT-Object</code> sequence, each of 5K objects;
+the sqlite db initially contained 800K objects.</p>
+<table><thead><tr><th><img src="measurements/regular-localhost-incremental-fill-5k/regular-localhost-incremental-fill-5k_raw_1694534032.svg"></th><th><img src="measurements/regular-localhost-incremental-fill-5k/regular-localhost-incremental-fill-5k_percentiles_to_main_1694534032.svg"></th></tr></thead><tbody><tr><td><img src="measurements/regular-localhost-incremental-fill-5k/regular-localhost-incremental-fill-5k_percentiles_to_fup_1694534032.svg"></td><td><img src="measurements/regular-localhost-incremental-fill-5k/regular-localhost-incremental-fill-5k_percentiles_fup_main_delta_1694534032.svg"></td></tr></tbody></table>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="scale_deployment_0_1-k3s3nodes_zeroload_emptydb">scale_deployment_0_1-k3s3nodes_zeroload_emptydb<a href="#scale_deployment_0_1-k3s3nodes_zeroload_emptydb" class="hash-link" aria-label="Direct link to scale_deployment_0_1-k3s3nodes_zeroload_emptydb" title="Direct link to scale_deployment_0_1-k3s3nodes_zeroload_emptydb">​</a></h3>
+<ul>
+<li>restart-type: <code>scale_deployment_0_1</code></li>
+<li>env: <code>virtual-machine/k3s-3-nodes/LH-volume</code></li>
+<li>load: <code>zero-empty-db</code></li>
+<li>#measures: <code>300</code></li>
+</ul>
+<p>The test has been conducted in 3 blocks, each of 100 restarts.
+Each restart in a block is constrained to occur on a specific node.
+The schema is the following:</p>
+<ol>
+<li>taint all nodes but <code>node-1</code></li>
+<li>trigger 100 pod restarts</li>
+<li>taint all nodes but <code>node-2</code></li>
+<li>trigger 100 pod restarts</li>
+<li>taint all nodes but <code>node-3</code></li>
+<li>trigger 100 pod restarts</li>
+</ol>
+<table><thead><tr><th><img src="measurements/scale_deployment_0_1-k3s3nodes-zeroload-emptydb/scale_deployment_0_1-k3s3nodes-zeroload-emptydb_raw_1695046129.svg"></th><th><img src="measurements/scale_deployment_0_1-k3s3nodes-zeroload-emptydb/scale_deployment_0_1-k3s3nodes-zeroload-emptydb_percentiles_to_main_1695046129.svg"></th></tr></thead><tbody><tr><td><img src="measurements/scale_deployment_0_1-k3s3nodes-zeroload-emptydb/scale_deployment_0_1-k3s3nodes-zeroload-emptydb_percentiles_to_fup_1695046129.svg"></td><td><img src="measurements/scale_deployment_0_1-k3s3nodes-zeroload-emptydb/scale_deployment_0_1-k3s3nodes-zeroload-emptydb_percentiles_fup_main_delta_1695046129.svg"></td></tr></tbody></table>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="tested-scenarios---s3-workload-during-s3gw-pod-outage">Tested Scenarios - S3-workload during s3gw Pod outage<a href="#tested-scenarios---s3-workload-during-s3gw-pod-outage" class="hash-link" aria-label="Direct link to Tested Scenarios - S3-workload during s3gw Pod outage" title="Direct link to Tested Scenarios - S3-workload during s3gw Pod outage">​</a></h2>
+<p>These scenarios are focused in collecting data from an S3 client performing
+a workload during an s3gw outage.
+For each S3 operation we collect both its Round Trip Time - <code>RTT</code> - and its
+<code>result</code> (success/failure).
+Then, we correlate an s3gw&#x27;s outage with collected results and RTTs.</p>
+<p>For each scenario tested we produce a specific artifact:</p>
+<ul>
+<li><code>*_S3WL_RTT_raw.svg</code>
+<ul>
+<li>
+<p>It is the plot containing the <code>RTT S3Workload</code> chart:</p>
+<ul>
+<li><strong>X-Axis</strong>: Relative time (starting from 0) when an S3 operation occurred.</li>
+<li><strong>Y-Axis</strong>: The <code>RTT</code>&#x27;s duration in milliseconds.</li>
+<li>Each vertical bar is colorized in: <code>Green</code> when the corresponding S3 operation
+was successful, in <code>Red</code> when the operation failed.</li>
+<li>On the <strong>X-Axis</strong>, in <code>Yellow</code>, are drawn all the s3gw&#x27;s outages occurred
+in the test; the segment represents the begin and the end of an outage.</li>
+<li>On the <strong>X-Axis</strong>, in <code>Cyan</code>, are drawn the durations before
+the first successful S3 operation after an outage.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="putobj-100ms-clusterip">PutObj-100ms-ClusterIp<a href="#putobj-100ms-clusterip" class="hash-link" aria-label="Direct link to PutObj-100ms-ClusterIp" title="Direct link to PutObj-100ms-ClusterIp">​</a></h3>
+<ul>
+<li>restart-type: <code>regular</code></li>
+<li>env: <code>k3d/host-path-volume</code></li>
+<li>client-S3-workload: <code>PutObject/100ms</code></li>
+<li>S3-endpoint: <code>s3gw-ClusterIP-service</code></li>
+<li>#restarts: <code>10</code></li>
+<li>#S3-operations: <code>394</code></li>
+</ul>
+<table><thead><tr><th><img src="measurements/s3wl-putobj-100ms-clusterip/1695396383_s3wl-putobj-100ms-ClusterIp_S3WL_RTT_raw.svg"></th><th><img src="measurements/s3wl-putobj-100ms-clusterip/1695396383_s3wl-putobj-100ms-ClusterIp_raw.svg"></th></tr></thead></table>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="putobj-100ms-ingress">PutObj-100ms-Ingress<a href="#putobj-100ms-ingress" class="hash-link" aria-label="Direct link to PutObj-100ms-Ingress" title="Direct link to PutObj-100ms-Ingress">​</a></h3>
+<ul>
+<li>restart-type: <code>regular</code></li>
+<li>env: <code>k3d/host-path-volume</code></li>
+<li>client-S3-workload: <code>PutObject/100ms</code></li>
+<li>S3-endpoint: <code>s3gw-Ingress</code></li>
+<li>#restarts: <code>10</code></li>
+<li>#S3-operations: <code>504</code></li>
+</ul>
+<table><thead><tr><th><img src="measurements/s3wl-putobj-100ms-ingress/1695396145_s3wl-putobj-100ms-Ingress_S3WL_RTT_raw.svg"></th><th><img src="measurements/s3wl-putobj-100ms-ingress/1695396145_s3wl-putobj-100ms-Ingress_raw.svg"></th></tr></thead></table>
+<hr></div></article><nav class="pagination-nav docusaurus-mt-lg" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/research/ha/"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">readme</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/research/ha/measurements/regular_localhost_zeroload_400_800Kdb/"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">Notes</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#activeactive" class="table-of-contents__link toc-highlight">Active/Active</a></li><li><a href="#activewarm-standby" class="table-of-contents__link toc-highlight">Active/Warm Standby</a></li><li><a href="#activestandby" class="table-of-contents__link toc-highlight">Active/Standby</a></li><li><a href="#investigations-rationale" class="table-of-contents__link toc-highlight">Investigation&#39;s Rationale</a></li><li><a href="#failure-cases" class="table-of-contents__link toc-highlight">Failure cases</a><ul><li><a href="#radosgws-pod-failure-and-radosgws-pod-rescheduling" class="table-of-contents__link toc-highlight">radosgw&#39;s POD failure and radosgw&#39;s POD rescheduling</a></li><li><a href="#non-graceful-node-failure" class="table-of-contents__link toc-highlight">Non-graceful node failure</a></li><li><a href="#radosgws-failure-due-to-a-bug" class="table-of-contents__link toc-highlight">radosgw&#39;s failure due to a bug</a></li><li><a href="#pv-data-corruption-at-application-level-due-to-radosgws-anomalous-exit" class="table-of-contents__link toc-highlight">PV Data corruption at application level due to radosgw&#39;s anomalous exit</a></li></ul></li><li><a href="#measuring-s3gw-failures-on-kubernetes" class="table-of-contents__link toc-highlight">Measuring s3gw failures on Kubernetes</a></li><li><a href="#notes-on-testing-s3gw-within-k8s" class="table-of-contents__link toc-highlight">Notes on testing s3gw within K8s</a></li><li><a href="#tested-scenarios---radosgw-restart" class="table-of-contents__link toc-highlight">Tested Scenarios - radosgw-restart</a><ul><li><a href="#regular_localhost_zeroload_emptydb" class="table-of-contents__link toc-highlight">regular_localhost_zeroload_emptydb</a></li><li><a href="#segfault_localhost_zeroload_emptydb" class="table-of-contents__link toc-highlight">segfault_localhost_zeroload_emptydb</a></li><li><a href="#regular_localhost_load_fio_64_write" class="table-of-contents__link toc-highlight">regular_localhost_load_fio_64_write</a></li><li><a href="#regular_localhost_zeroload_400_800kdb" class="table-of-contents__link toc-highlight">regular_localhost_zeroload_400_800Kdb</a></li><li><a href="#regular-localhost-incremental-fill-5k" class="table-of-contents__link toc-highlight">regular-localhost-incremental-fill-5k</a></li><li><a href="#scale_deployment_0_1-k3s3nodes_zeroload_emptydb" class="table-of-contents__link toc-highlight">scale_deployment_0_1-k3s3nodes_zeroload_emptydb</a></li></ul></li><li><a href="#tested-scenarios---s3-workload-during-s3gw-pod-outage" class="table-of-contents__link toc-highlight">Tested Scenarios - S3-workload during s3gw Pod outage</a><ul><li><a href="#putobj-100ms-clusterip" class="table-of-contents__link toc-highlight">PutObj-100ms-ClusterIp</a></li><li><a href="#putobj-100ms-ingress" class="table-of-contents__link toc-highlight">PutObj-100ms-Ingress</a></li></ul></li></ul></div></div></div></div></main></div></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="col footer__col"><div class="footer__title">Quick Links</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/">Documentation</a></li><li class="footer__item"><a class="footer__link-item" href="/decisions">Decisions</a></li><li class="footer__item"><a class="footer__link-item" href="/ideas">Ideas</a></li><li class="footer__item"><a class="footer__link-item" href="/s3-compatibility-table">S3 Compatibility</a></li></ul></div><div class="col footer__col"><div class="footer__title">S3GW Project</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://s3gw.tech" target="_blank" rel="noopener noreferrer" class="footer__link-item">Homepage<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://github.com/s3gw-tech/s3gw" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://github.com/orgs/s3gw-tech/discussions" target="_blank" rel="noopener noreferrer" class="footer__link-item">Discussions<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://artifacthub.io/packages/helm/s3gw/s3gw" target="_blank" rel="noopener noreferrer" class="footer__link-item">ArtifactHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://quay.io/organization/s3gw" target="_blank" rel="noopener noreferrer" class="footer__link-item">Quay<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2024 s3gw.tech contributors. Built with Docusaurus.</div></div></div></footer></div>
+</body>
+</html>

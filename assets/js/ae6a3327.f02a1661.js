@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[4313],{6277:e=>{e.exports=JSON.parse('[{"label":"area/docs","permalink":"/ideas/tags/area-docs","count":1}]')}}]);

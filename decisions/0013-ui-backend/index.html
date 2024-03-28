@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="docs-wrapper plugin-docs plugin-id-decisions docs-version-current docs-doc-page docs-doc-id-0013-ui-backend" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.1.1">
+<title data-rh="true">s3gw-ui backend | S3GW Documentation</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://docs.s3gw.tech/img/s3gw-tech-social-card.png"><meta data-rh="true" name="twitter:image" content="https://docs.s3gw.tech/img/s3gw-tech-social-card.png"><meta data-rh="true" property="og:url" content="https://docs.s3gw.tech/decisions/0013-ui-backend"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-decisions-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-decisions-current"><meta data-rh="true" property="og:title" content="s3gw-ui backend | S3GW Documentation"><meta data-rh="true" name="description" content="Context and Problem Statement"><meta data-rh="true" property="og:description" content="Context and Problem Statement"><link data-rh="true" rel="icon" href="/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://docs.s3gw.tech/decisions/0013-ui-backend"><link data-rh="true" rel="alternate" href="https://docs.s3gw.tech/decisions/0013-ui-backend" hreflang="en"><link data-rh="true" rel="alternate" href="https://docs.s3gw.tech/decisions/0013-ui-backend" hreflang="x-default"><link rel="stylesheet" href="/assets/css/styles.d171a0d7.css">
+<script src="/assets/js/runtime~main.db4e1a95.js" defer="defer"></script>
+<script src="/assets/js/main.53f686a7.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<script>!function(){function t(t){document.documentElement.setAttribute("data-theme",t)}var e=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return localStorage.getItem("theme")}catch(t){}}();t(null!==e?e:"light")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><div role="region" aria-label="Skip to main content"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/"><div class="navbar__logo"><img src="/img/s3gw-tech-logo-proposed.png" alt="s3gw logo" class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="/img/s3gw-tech-logo-proposed.png" alt="s3gw logo" class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate">S3GW</b></a><a class="navbar__item navbar__link" href="/">Documentation</a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" sidebarid="decisions" href="/decisions">Decisions</a><a class="navbar__item navbar__link" sidebarid="ideas" href="/ideas">Ideas</a></div><div class="navbar__items navbar__items--right"><a href="https://s3gw.tech" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">Homepage<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><a href="https://github.com/s3gw-tech/s3gw" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><a href="https://github.com/orgs/s3gw-tech/discussions" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">Discussions<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="Switch between dark and light mode (currently light mode)" aria-label="Switch between dark and light mode (currently light mode)" aria-live="polite"><svg viewBox="0 0 24 24" width="24" height="24" class="lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" class="darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="main-wrapper mainWrapper_z2l0"><div class="docsWrapper_hBAB"><button aria-label="Scroll back to top" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type="button"></button><div class="docRoot_UBD9"><aside class="theme-doc-sidebar-container docSidebarContainer_YfHR"><div class="sidebarViewport_aRkj"><div class="sidebar_njMd"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/decisions/">Introduction</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/decisions/adr-template">Template</a></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--active">Decisions</a></div><ul style="display:block;overflow:visible;height:auto" class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/decisions/0000-use-markdown-any-decision-records">Use Markdown Any Decision Records</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/decisions/0001-reorganize-documentation">Reorganize Documentation</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/decisions/0002-s3gw-storage-backend">s3gw Storage Backend</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/decisions/0003-sfs">SFS SAL Backend Design</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/decisions/0004-release-captain">Context and Problem Statement</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/decisions/0005-project-labels">Context and Problem Statement</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/decisions/0006-git-branches-tags">Git branches and tags</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/decisions/0007-release-process">Release Process</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/decisions/0008-pull-requests-code-review-guide">Pull Requests and Code Review Guide</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/decisions/0009-sfs-collection-of-high-level-design-decisions">Collection of High Level Design Decisions</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/decisions/0010-sfs-versioning">SFS Versioning</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/decisions/0011-sfs-timestamps">SFS Timestamps</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/decisions/0012-sfs-error-handling">SFS Error Handling</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/decisions/0013-ui-backend">s3gw-ui backend</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/decisions/0014-ui-backend-api">s3gw-ui backend API</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/decisions/0015-release-methodology">Release Methodology for the s3gw project</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/decisions/0016-release-steps">Release Steps for the s3gw project</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/decisions/0017-release-testing">Testing a release</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/decisions/0018-s3gw-ha-model">s3gw High Availability model</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/decisions/0019-severity-labels">Severity Labels</a></li></ul></li></ul></nav></div></div></aside><main class="docMainContainer_TBSr"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_VOVn"><div class="docItemContainer_Djhp"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Z_bl" aria-label="Breadcrumbs"><ul class="breadcrumbs" itemscope="" itemtype="https://schema.org/BreadcrumbList"><li class="breadcrumbs__item"><a aria-label="Home page" class="breadcrumbs__link" href="/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_YNFT"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li class="breadcrumbs__item"><span class="breadcrumbs__link">Decisions</span><meta itemprop="position" content="1"></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link" itemprop="name">s3gw-ui backend</span><meta itemprop="position" content="2"></li></ul></nav><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_ITEo"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">On this page</button></div><div class="theme-doc-markdown markdown"><h1>s3gw-ui backend</h1>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="context-and-problem-statement">Context and Problem Statement<a href="#context-and-problem-statement" class="hash-link" aria-label="Direct link to Context and Problem Statement" title="Direct link to Context and Problem Statement">​</a></h2>
+<p>The current <code>s3gw-ui</code> format is as a browser application, loaded and run solely
+client-side, which directly speaks to the s3gw service (RGW, henceforth known as
+<code>s3gw</code>).</p>
+<!-- -->
+<p>The diagram represents the various steps in the workings of the <code>s3gw-ui</code>. As
+one can see, <code>traefik</code> is always in the middle of the communication between the
+user&#x27;s browser and both the <code>s3gw-ui</code> and the <code>s3gw</code> service; and we can also
+see that <code>s3gw-ui</code> does not communicate directly with <code>s3gw</code>. Instead, what
+happens is that during <code>1</code> and <code>2</code> we have the user&#x27;s browser accessing the
+<code>s3gw-ui</code> container and being presented with the <code>s3gw-ui</code> application (via <code>3</code>
+and <code>4</code>); this application is then loaded by the browser, and all subsequent
+actions happen client-side, without involving <code>s3gw-ui</code> (except if additional UI
+resources need to be loaded). All further communication with <code>s3gw</code> is done
+directly from the user&#x27;s browser to the <code>s3gw</code> service (see <code>5</code>, <code>6</code>, <code>7</code>, and <code>8</code>).</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="the-problem-with-cors">The problem with CORS<a href="#the-problem-with-cors" class="hash-link" aria-label="Direct link to The problem with CORS" title="Direct link to The problem with CORS">​</a></h3>
+<p>Given the <code>s3gw-ui</code> is served to the client from a different host than the one
+<code>s3gw</code> is running on, we are subject to a modern browser mechanism intended to
+prevent a website to load cross-origin resources from servers that do not
+intend to share said resources (CORS).</p>
+<p>While it is known how to make a web server allow cross-origin access to its
+resources, in our specific case it&#x27;s a non-trivial endeavor because <code>s3gw</code>
+does not support a default CORS policy (other than for user-defined buckets),
+and thus does not populate CORS headers that the client expects. This results
+in the client refusing to allow the <code>s3gw-ui</code> from loading resources from the
+<code>s3gw</code> host, culminating in a non-working (or misbehaving) <code>s3gw-ui</code>.</p>
+<p>We have employed mitigation strategies to address this behavior. For
+development purposes, we use a local web server that both serves the frontend
+and at the same time acts as a proxy to <code>s3gw</code>; resources are thus served
+through this web server, and, from the client&#x27;s point of view, their origin is
+in practice the same host the <code>s3gw-ui</code>&#x27;s application is being served from --
+CORS does not apply in this case. For production systems, we have instead
+opted to have a middleware, <code>traefik</code>, that rewrites request response headers
+originating from <code>s3gw</code>, populating said response with CORS headers.</p>
+<p>The latter scenario, the one our users rely on, poses a significant problem:
+by rewriting the headers so the <code>s3gw-ui</code> is able to access the <code>s3gw</code>
+resources, we are not honoring the user-specified bucket-specific CORS policies.
+On the other hand, if we choose to honor those policies, we expose the <code>s3gw-ui</code>
+to the possibility of being unable to administrate <code>s3gw</code> as it is supposed to.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="s3gw-managed-by-other-uis-eg-longhorn"><code>s3gw</code> managed by other UIs (e.g., Longhorn)<a href="#s3gw-managed-by-other-uis-eg-longhorn" class="hash-link" aria-label="Direct link to s3gw-managed-by-other-uis-eg-longhorn" title="Direct link to s3gw-managed-by-other-uis-eg-longhorn">​</a></h3>
+<p>As our integration with Longhorn approaches, we may want to perform a
+subset of the operation <code>s3gw-ui</code> currently supports via the Longhorn UI, for
+better integration. The approaches to such integration are out of the scope of
+this document, but it is important to keep this in mind when choosing an option
+under consideration. For instance, whether the selected option addresses the
+CORS issue throughout the board; and whether the selected option may be
+sustainable down the line.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="multiple-s3gw-instances-managed-by-the-same-s3gw-ui">Multiple <code>s3gw</code> instances managed by the same <code>s3gw-ui</code><a href="#multiple-s3gw-instances-managed-by-the-same-s3gw-ui" class="hash-link" aria-label="Direct link to multiple-s3gw-instances-managed-by-the-same-s3gw-ui" title="Direct link to multiple-s3gw-instances-managed-by-the-same-s3gw-ui">​</a></h3>
+<p>As we move closer to production environments, we will likely be expected to have
+multiple <code>s3gw</code> instances in the same cluster. While we can always have one
+<code>s3gw-ui</code> instance per <code>s3gw</code> service, we should consider having one single
+<code>s3gw-ui</code> able to centrally manage multiple <code>s3gw</code> service instances.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="considered-options">Considered Options<a href="#considered-options" class="hash-link" aria-label="Direct link to Considered Options" title="Direct link to Considered Options">​</a></h2>
+<p>With the intent to address the problems previously described, we have
+considered several different options. This section describes them.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="web-proxy">Web Proxy<a href="#web-proxy" class="hash-link" aria-label="Direct link to Web Proxy" title="Direct link to Web Proxy">​</a></h3>
+<p>By setting a web proxy somewhere between the client and <code>s3gw</code>, for UI purposes,
+we could rewrite CORS headers solely for the UI use-case. However, it&#x27;s not
+clear how this could be achieved. We would likely have to target client-side
+requests to a different address than the one <code>s3gw</code> lives in, proxying the
+requests to the <code>s3gw</code> service then.</p>
+<!-- -->
+<!-- -->
+<p>While this could potentially solve the CORS issue for the <code>s3gw-ui</code> client&#x27;s
+browser, and potentially for the Longhorn UI, we could have a maintainability
+issue in our hands: this option requires the latter to implement a lot of the
+same logic as <code>s3gw-ui</code>. Additionally, this would require multiple proxies in
+the same cluster, should we want to have the same <code>s3gw-ui</code> managing multiple
+<code>s3gw</code> instances; or, at least, be able to have the same proxy differentiating
+between the various <code>s3gw</code> instances while handling requests from the same
+<code>s3gw-ui</code> address.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="serving-s3gw-ui-from-the-same-address-as-s3gw">Serving <code>s3gw-ui</code> from the same address as <code>s3gw</code><a href="#serving-s3gw-ui-from-the-same-address-as-s3gw" class="hash-link" aria-label="Direct link to serving-s3gw-ui-from-the-same-address-as-s3gw" title="Direct link to serving-s3gw-ui-from-the-same-address-as-s3gw">​</a></h3>
+<p>There are two options to serve <code>s3gw-ui</code> to the user&#x27;s browser from<code>s3gw</code>:</p>
+<ol>
+<li>Modifying <code>RGW</code>&#x27;s code to support serving the UI directly; or,</li>
+<li>Use something like <code>nginx</code>&#x27;s path-based routing to essentially proxy between
+the user&#x27;s browser and both <code>s3gw-ui</code> and <code>s3gw</code>.</li>
+</ol>
+<p>Both these options suffer from the same problems though: we would always need to
+allocate a special-purpose path for the <code>s3gw-ui</code> to be served from (which would
+be a special bucket when using path-based buckets), and we would still have
+CORS issues when accessing vhost-based buckets (because the UI would be served
+from a different vhost than the <code>s3gw-ui</code> address).</p>
+<p>Additionally, we would be unable to manage several instances from the same
+<code>s3gw-ui</code>, and we would still need to duplicate logic in the Longhorn UI.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="always-honoring-cors-headers-from-s3gw">Always honoring CORS Headers from <code>s3gw</code><a href="#always-honoring-cors-headers-from-s3gw" class="hash-link" aria-label="Direct link to always-honoring-cors-headers-from-s3gw" title="Direct link to always-honoring-cors-headers-from-s3gw">​</a></h3>
+<p>Alternatively, instead of attempting to deal with CORS headers, we could simply
+ensure <code>s3gw</code> always allowed any host from accessing its resources <strong>except</strong>
+when a given bucket had a user-specified CORS policy. In this case, the
+<code>s3gw-ui</code> would function normally, except when a given bucket&#x27;s CORS policy
+prevented <code>s3gw-ui</code> access.</p>
+<p>The <code>s3gw-ui</code> could handle these cases, and simply prevent access to such a
+bucket. However, we believe this defeats the purpose of <code>s3gw-ui</code> as an
+administration and management tool for <code>s3gw</code>.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="tweaking-s3gw-to-honor-cors-headers-except-for-the-s3gw-ui">Tweaking <code>s3gw</code> to honor CORS Headers except for the s3gw-ui<a href="#tweaking-s3gw-to-honor-cors-headers-except-for-the-s3gw-ui" class="hash-link" aria-label="Direct link to tweaking-s3gw-to-honor-cors-headers-except-for-the-s3gw-ui" title="Direct link to tweaking-s3gw-to-honor-cors-headers-except-for-the-s3gw-ui">​</a></h3>
+<p>This option comes in line with the previous, but instead of always honoring all
+the CORS headers, the <code>s3gw</code> service would reply with custom CORS headers should
+the request from the client browser provide some form of identification
+mechanism that would allow <code>s3gw</code> to understand the request came from <code>s3gw-ui</code>.</p>
+<p>The main problem with this approach is that it is essentially a hack, and
+obscure.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="s3gw-ui-specific-backend">s3gw-ui specific Backend<a href="#s3gw-ui-specific-backend" class="hash-link" aria-label="Direct link to s3gw-ui specific Backend" title="Direct link to s3gw-ui specific Backend">​</a></h3>
+<p>Another alternative is to have an <code>s3gw-ui</code>-specific backend, which acts much
+like a proxy, but unlike a proxy it actually holds the logic to interact with
+<code>s3gw</code>. This backend is nothing more than a web server, serving the <code>s3gw-ui</code>&#x27;s
+UI (frontend) to the user&#x27;s browser (<code>1</code>, <code>2</code>). Once loaded in the user&#x27;s
+browser, the frontend will then issue REST calls to the backend (<code>3</code>) to perform
+its operations. These may trigger <code>s3gw</code> calls from the backend (<code>4</code>, <code>5</code>),
+which will then reply back to the frontend (<code>6</code>).</p>
+<!-- -->
+<p>The major benefit of this approach is that it solves CORS for us: because the
+frontend is being served by the same host it is calling on to perform its
+operations, the browser is not subject to <code>s3gw</code>-specific CORS policies. And the
+backend is not subject to those same CORS policies because it is not a browser.</p>
+<p>There are pros and cons about this approach though. On the cons side, we have
+the need to split the logic to interact with <code>s3gw</code> from the frontend into the
+backend; and we will have a new codebase to maintain. On the pros side, we not
+only get rid of the CORS issue, but we can have the frontend issuing complex
+operations to the backend, which will then handle their complexity. Further, by
+splitting the logic to interact with <code>s3gw</code> to the backend, we can now support
+managing and administrating multiple <code>s3gw</code> from the same frontend, and use a
+different frontend than the one provided by <code>s3gw-ui</code> to manage <code>s3gw</code> (as long
+as they interact with the <code>s3gw-ui</code> backend).</p>
+<!-- -->
+<p>The diagram above is much like the previous diagram, but it shows two instances
+of <code>s3gw</code> running on the cluster, with the user&#x27;s browser being able to manage
+and administrate both from the same <code>s3gw-ui</code> instance.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="decision-outcome">Decision Outcome<a href="#decision-outcome" class="hash-link" aria-label="Direct link to Decision Outcome" title="Direct link to Decision Outcome">​</a></h2>
+<p>Amongst the various options, the most versatile and flexible option is the
+<code>s3gw-ui</code>-specific backend. Not only it allows us to circumvent the CORS issue
+we have been facing, it also brings to the table more potential future
+directions.</p>
+<p>While the team is familiar with approaches and technologies for its
+implementation, we are still faced with some challenges, discussed
+further down.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="technologies">Technologies<a href="#technologies" class="hash-link" aria-label="Direct link to Technologies" title="Direct link to Technologies">​</a></h3>
+<p>Consensus was achieved around using Python as the implementation language for
+the <code>s3gw-ui</code> backend, using <code>FastAPI</code> as the web framework. We have had
+previous experience with both during the <code>Aquarium</code> project, and both are battle
+tested, production ready technologies. For the <code>S3</code> dialect, <code>boto3</code> seems to be
+the best library to rely on.</p>
+<p>Communication between the user&#x27;s browser and the <code>s3gw-ui</code> backend will be
+protected by SSL, and user authentication will rely on JSON Web Tokens (JWT),
+which is trivial to implement with <code>FastAPI</code>.</p>
+<p>Depending how we choose to implement user authentication with <code>s3gw</code>, whether
+directly using <code>AWS</code> credentials (current behavior) or by keeping those
+credentials in the <code>s3gw-ui</code> backend and relying instead on <code>s3gw-ui</code>-specific
+usernames and passwords, we may also need to have some form of data store for
+secrets. This data store becomes imperative in case we are managing multiple
+<code>s3gw</code> instances, given we will need to keep track of their addresses.</p>
+<p>For the development of the <code>s3gw-ui</code> backend, we will rely on <code>black</code> for code
+formatting, <code>pyright</code> as a static type checker, and <code>tox</code> with <code>pytest</code> for
+tests.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="behavior">Behavior<a href="#behavior" class="hash-link" aria-label="Direct link to Behavior" title="Direct link to Behavior">​</a></h3>
+<p>While the current <code>s3gw-ui</code> implementations talks to <code>s3gw</code> using S3 dialect
+via REST, we will now have an intermediary between the <code>s3gw-ui</code> frontend and
+the <code>s3gw</code>; i.e., the <code>s3gw-ui</code> backend. In this case, it will be the <code>s3gw-ui</code>
+backend that will communicate with <code>s3gw</code> using the S3 dialect, via REST, while
+the <code>s3gw-ui</code> frontend will communicate with the <code>s3gw-ui</code> backend using a
+specific REST API dialect, tailored to the frontend&#x27;s needs.</p>
+<p>For example, lets assume the <code>s3gw-ui</code> frontend desires to know all buckets in
+the system, the number of objects, and each bucket&#x27;s total size. Currently,
+this means performing several different operations to <code>s3gw</code>, and processing
+the results in the frontend. With the new approach, the <code>s3gw-ui</code> frontend
+will simply ask its backend for this information in one single call (e.g.,
+<code>/bucket/statistics?buckets=all</code>), and it will be the <code>s3gw-ui</code> backend&#x27;s
+responsibility to perform the needed operations to <code>s3gw</code> to obtain the
+relevant information.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="location">Location<a href="#location" class="hash-link" aria-label="Direct link to Location" title="Direct link to Location">​</a></h3>
+<p>The <code>s3gw-ui</code> backend should be part of the <a href="https://github.com/aquarist-labs/s3gw-ui/" target="_blank" rel="noopener noreferrer"><code>s3gw-ui</code> repository</a>. The best
+approach for file organization within the repository is beyond the scope of this
+document.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="challenges">Challenges<a href="#challenges" class="hash-link" aria-label="Direct link to Challenges" title="Direct link to Challenges">​</a></h3>
+<p>The main challenge will be to implement the backend from scratch, ensure its
+correctness, and create a new testing pipeline, as our commitment deadlines
+approaches.</p>
+<p>Additionally,</p>
+<ol>
+<li>While <code>FastAPI</code> packages are now available for openSUSE Tumbleweed, they are
+not available for openSUSE Leap, on which our container builds are based. We
+will have to rely on installing from the Python Package Index (PyPI).</li>
+<li>Because the <code>s3gw-ui</code> frontend no longer communicates directly with <code>s3gw</code>,
+and the <code>s3gw-ui</code> backend requires user credentials to perform operations in
+<code>s3gw</code>, we will have to find a way to pass the user&#x27;s credentials to the
+<code>s3gw-ui</code> backend.</li>
+<li>When managing multiple <code>s3gw</code> instances, different <code>s3gw</code> instances may have
+(and should have) different credentials and users. We will need to decide
+how user credentials should be handled and managed, especially for
+administrator roles that are intended to manage and administrate multiple
+<code>s3gw</code> instances.</li>
+</ol></div></article><nav class="pagination-nav docusaurus-mt-lg" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/decisions/0012-sfs-error-handling"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">SFS Error Handling</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/decisions/0014-ui-backend-api"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">s3gw-ui backend API</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#context-and-problem-statement" class="table-of-contents__link toc-highlight">Context and Problem Statement</a><ul><li><a href="#the-problem-with-cors" class="table-of-contents__link toc-highlight">The problem with CORS</a></li><li><a href="#s3gw-managed-by-other-uis-eg-longhorn" class="table-of-contents__link toc-highlight"><code>s3gw</code> managed by other UIs (e.g., Longhorn)</a></li><li><a href="#multiple-s3gw-instances-managed-by-the-same-s3gw-ui" class="table-of-contents__link toc-highlight">Multiple <code>s3gw</code> instances managed by the same <code>s3gw-ui</code></a></li></ul></li><li><a href="#considered-options" class="table-of-contents__link toc-highlight">Considered Options</a><ul><li><a href="#web-proxy" class="table-of-contents__link toc-highlight">Web Proxy</a></li><li><a href="#serving-s3gw-ui-from-the-same-address-as-s3gw" class="table-of-contents__link toc-highlight">Serving <code>s3gw-ui</code> from the same address as <code>s3gw</code></a></li><li><a href="#always-honoring-cors-headers-from-s3gw" class="table-of-contents__link toc-highlight">Always honoring CORS Headers from <code>s3gw</code></a></li><li><a href="#tweaking-s3gw-to-honor-cors-headers-except-for-the-s3gw-ui" class="table-of-contents__link toc-highlight">Tweaking <code>s3gw</code> to honor CORS Headers except for the s3gw-ui</a></li><li><a href="#s3gw-ui-specific-backend" class="table-of-contents__link toc-highlight">s3gw-ui specific Backend</a></li></ul></li><li><a href="#decision-outcome" class="table-of-contents__link toc-highlight">Decision Outcome</a><ul><li><a href="#technologies" class="table-of-contents__link toc-highlight">Technologies</a></li><li><a href="#behavior" class="table-of-contents__link toc-highlight">Behavior</a></li><li><a href="#location" class="table-of-contents__link toc-highlight">Location</a></li><li><a href="#challenges" class="table-of-contents__link toc-highlight">Challenges</a></li></ul></li></ul></div></div></div></div></main></div></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="col footer__col"><div class="footer__title">Quick Links</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/">Documentation</a></li><li class="footer__item"><a class="footer__link-item" href="/decisions">Decisions</a></li><li class="footer__item"><a class="footer__link-item" href="/ideas">Ideas</a></li><li class="footer__item"><a class="footer__link-item" href="/s3-compatibility-table">S3 Compatibility</a></li></ul></div><div class="col footer__col"><div class="footer__title">S3GW Project</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://s3gw.tech" target="_blank" rel="noopener noreferrer" class="footer__link-item">Homepage<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://github.com/s3gw-tech/s3gw" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://github.com/orgs/s3gw-tech/discussions" target="_blank" rel="noopener noreferrer" class="footer__link-item">Discussions<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://artifacthub.io/packages/helm/s3gw/s3gw" target="_blank" rel="noopener noreferrer" class="footer__link-item">ArtifactHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://quay.io/organization/s3gw" target="_blank" rel="noopener noreferrer" class="footer__link-item">Quay<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright  © 2024 s3gw.tech contributors. Built with Docusaurus.</div></div></div></footer></div>
+</body>
+</html>

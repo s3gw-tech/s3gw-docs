@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[6027],{1780:e=>{e.exports=JSON.parse('{"label":"area/docs","permalink":"/ideas/tags/area-docs","allTagsPath":"/ideas/tags","count":1,"items":[{"id":"PID-0-reserved","title":"Project Idea Document (PID)","description":"Context and Problem Statement","permalink":"/ideas/"}],"unlisted":false}')}}]);
