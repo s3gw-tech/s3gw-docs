@@ -5,29 +5,35 @@ import MDXContent from "@theme-original/MDXContent";
 import type MDXContentType from "@theme/MDXContent";
 import type { WrapperProps } from "@docusaurus/types";
 import Link from "@docusaurus/Link";
+import { DateTime } from "luxon";
 
 type Props = WrapperProps<typeof MDXContentType>;
 type FrontMatter = DocFrontMatter & { [id: string]: any };
 
-const decisionsFrontMatter = [
+const customFrontMatter = [
   "status",
   "superseded-by",
   "date",
+  "updated",
   "deciders",
   "consulted",
   "informed",
 ];
 
-function getDecisionValue(value: string): JSX.Element {
+function getValue(value: string): JSX.Element {
   let v = value;
-  if (v.endsWith(".md") || v.endsWith(".mdx")) {
+  if (typeof value === "string" && (v.endsWith(".md") || v.endsWith(".mdx"))) {
     v = v.replace(/\.mdx?/, "");
     return <Link to={v}>{v}</Link>;
+  }
+  const date = DateTime.fromISO(v);
+  if (date.isValid) {
+    v = date.toFormat("LLL dd, yyyy");
   }
   return <>{v}</>;
 }
 
-function getDecisionItem(key: string, value: string): JSX.Element {
+function getItem(key: string, value: string): JSX.Element {
   return (
     <div className="row">
       <div className="col col--3">
@@ -36,20 +42,20 @@ function getDecisionItem(key: string, value: string): JSX.Element {
         </span>
       </div>
       <div className="col col--9">
-        <span>{getDecisionValue(value)}</span>
+        <span>{getValue(value)}</span>
       </div>
     </div>
   );
 }
 
-function getDecisionFrontMatter(frontMatter: FrontMatter): JSX.Element {
+function getCustomFrontMatter(frontMatter: FrontMatter): JSX.Element {
   const keys = Object.keys(frontMatter);
   return (
     <>
       <div className="container">
         {keys.map((key: string) => {
-          if (decisionsFrontMatter.includes(key)) {
-            return getDecisionItem(key, frontMatter[key]);
+          if (customFrontMatter.includes(key)) {
+            return getItem(key, frontMatter[key]);
           }
         })}
       </div>
@@ -57,10 +63,10 @@ function getDecisionFrontMatter(frontMatter: FrontMatter): JSX.Element {
   );
 }
 
-function hasDecisionFrontMatter(frontMatter: FrontMatter): boolean {
+function hasCustomFrontMatter(frontMatter: FrontMatter): boolean {
   return (
     Object.keys(frontMatter).find((value: string) =>
-      decisionsFrontMatter.includes(value)
+      customFrontMatter.includes(value)
     ) !== undefined
   );
 }
@@ -69,10 +75,10 @@ export default function MDXContentWrapper(props: Props): JSX.Element {
   const doc = useDoc();
   return (
     <>
-      {hasDecisionFrontMatter(doc.frontMatter) && (
+      {hasCustomFrontMatter(doc.frontMatter) && (
         <div className="card margin-bottom--md">
           <div className="card__body">
-            {getDecisionFrontMatter(doc.metadata.frontMatter)}
+            {getCustomFrontMatter(doc.metadata.frontMatter)}
           </div>
         </div>
       )}

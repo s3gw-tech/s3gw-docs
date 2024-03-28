@@ -67,6 +67,17 @@ const config: Config = {
       } satisfies DocPlugin.Options,
     ],
     [
+      "@docusaurus/plugin-content-docs",
+      {
+        id: "ideas",
+        path: "../s3gw/docs/ideas",
+        routeBasePath: "/ideas",
+        sidebarPath: "./sidebarsIdeas.ts",
+        sidebarCollapsed: false,
+        sidebarCollapsible: false,
+      } satisfies DocPlugin.Options,
+    ],
+    [
       "@docusaurus/theme-classic",
       {
         customCss: ["./src/css/custom.css"],
@@ -95,6 +106,12 @@ const config: Config = {
           position: "left",
           to: "/decisions",
           sidebarId: "decisions",
+        },
+        {
+          label: "Ideas",
+          position: "left",
+          to: "/ideas",
+          sidebarId: "ideas",
         },
         // { to: "/blog", label: "Blog", position: "left" },
         {
