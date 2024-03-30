@@ -1,4 +1,3 @@
-import { themes as prismThemes } from "prism-react-renderer";
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
 import type * as DocPlugin from "@docusaurus/plugin-content-docs";
@@ -10,7 +9,7 @@ import {
 
 const config: Config = {
   title: "S3GW Documentation",
-  tagline: "",
+  tagline: "Lightweght S3-Compatible Object Store",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
@@ -35,8 +34,6 @@ const config: Config = {
     defaultLocale: "en",
     locales: ["en"],
   },
-
-  presets: [],
 
   markdown: {
     mermaid: true,
@@ -97,13 +94,17 @@ const config: Config = {
   ],
 
   themeConfig: {
-    // Replace with your project's social card
     image: "img/s3gw-tech-social-card.png",
+    colorMode: {
+      defaultMode: "light",
+      disableSwitch: false,
+    },
     navbar: {
       title: "S3GW",
       logo: {
-        alt: "s3gw logo",
-        src: "img/s3gw-tech-logo-200x200.png",
+        alt: "s3gw.tech logo",
+        src: "img/s3gw-tech-logo-round-solo.png",
+        srcDark: "img/s3gw-tech-logo-round-dark-solo.png",
       },
       items: [
         {
@@ -197,10 +198,6 @@ const config: Config = {
         },
       ],
       copyright: `Copyright © ${new Date().getFullYear()} s3gw.tech contributors. Built with Docusaurus.`,
-    },
-    prism: {
-      theme: prismThemes.github,
-      darkTheme: prismThemes.dracula,
     },
   } satisfies Preset.ThemeConfig,
 };
